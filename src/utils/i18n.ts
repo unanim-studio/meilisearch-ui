@@ -32,7 +32,7 @@ i18n
     fallbackNS: NAMESPACES[0],
     backend: {
       // fs backend options
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      loadPath: '/meilisearch/locales/{{lng}}/{{ns}}.json',
     },
     interpolation: {
       escapeValue: false, // react already safes from xss

@@ -4,11 +4,12 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { IndexesQuery } from 'meilisearch/src/types';
 import { useCurrentInstance } from './useCurrentInstance';
 
-export const useIndexes = (client: MeiliSearch, params?: IndexesQuery): [Index[], UseQueryResult] => {
+export const useIndexes = (client: MeiliSearch, params?: IndexesQuery): [Index[], UseQueryResult, string, React.Dispatch<React.SetStateAction<string>>] => {
   const currentInstance = useCurrentInstance();
   const host = currentInstance?.host;
 
   const [indexes, setIndexes] = useState<Index[]>([]);
+  const [filterString, setFilterString] = useState<string>('');
 
   const query = useQuery({
     queryKey: ['indexes', host],
@@ -19,9 +20,10 @@ export const useIndexes = (client: MeiliSearch, params?: IndexesQuery): [Index[]
 
   useEffect(() => {
     if (query.isSuccess) {
-      setIndexes(query.data);
+      const filteredIndexes = query.data.filter((item: { uid: string | any[]; }) => item.uid.includes(filterString))
+      setIndexes(filteredIndexes)
     }
-  }, [query.data, query.isSuccess]);
+  }, [query.data, query.isSuccess, filterString]);
 
-  return [indexes, query];
+  return [indexes, query, filterString, setFilterString];
 };

@@ -1,6 +1,6 @@
 import { Header } from '@/src/components/Header';
 import { MouseEventHandler, useCallback, useMemo, useState } from 'react';
-import { ActionIcon, Badge, Button, Modal } from '@mantine/core';
+import { ActionIcon, Badge, Button, Modal, TextInput } from '@mantine/core';
 import { useIndexes } from '@/src/hooks/useIndexes';
 import { useInstanceStats } from '@/src/hooks/useInstanceStats';
 import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
@@ -11,6 +11,7 @@ import {
   IconAdjustments,
   IconAlertTriangle,
   IconFileImport,
+  IconSearch,
   IconSquareRoundedPlusFilled,
 } from '@tabler/icons-react';
 
@@ -32,7 +33,7 @@ function IndexesLayout() {
   const navigate = useNavigate();
   const client = useMeiliClient();
   const stats = useInstanceStats(client);
-  const [indexes, indexesQuery] = useIndexes(client);
+  const [indexes, indexesQuery, filterString, setFilterString] = useIndexes(client, {limit: 1000});
   const [searchParams] = useSearchParams();
   const [isFieldDistributionDetailModalOpen, setIsFieldDistributionDetailModalOpen] = useState(false);
   const [fieldDistributionDetailChartIndex, setFieldDistributionDetailChartIndex] = useState<Index>(indexes[0]);
@@ -244,16 +245,25 @@ function IndexesLayout() {
       <div className="bg-mount full-page p-4 gap-2 !grid grid-cols-4 grid-rows-[repeat(10,_minmax(0,_1fr))]">
         <Header className="col-span-full" client={client} />
         <div
-          className={`col-span-1 row-[span_9_/_span_9] bg-background-light 
+          className={`col-span-1 row-[span_9_/_span_9] bg-background-light
         flex flex-col items-stretch p-6 rounded-3xl gap-y-2 overflow-hidden`}
         >
           <div className={`flex justify-between items-center flex-wrap gap-2`}>
+
             <div className={`font-extrabold text-xl`}>🦄 {t('indexes')}</div>
 
             <ActionIcon variant={'transparent'} component={Link} to={`/ins/${currentInstance.id}/index/create`}>
               <IconSquareRoundedPlusFilled size={64} />
             </ActionIcon>
           </div>
+          <TextInput
+            leftSection={<IconSearch size={16} />}
+            autoFocus
+            radius="md"
+            placeholder="search indexes"
+            value={filterString}
+            onChange={(e)=>setFilterString(e.target.value)}
+          />
           <div
             className={clsx('flex-1 p-1 flex flex-col items-stretch gap-y-2 ', 'overflow-x-hidden overflow-y-scroll')}
           >

@@ -6,5 +6,5 @@ type Props = {
 };
 
 export const ReactRouterProvider: FC<Props> = ({ children }) => {
-  return <BrowserRouter basename={import.meta.env.BASE_URL || '/'}>{children}</BrowserRouter>;
+  return <BrowserRouter basename="/meilisearch/">{children}</BrowserRouter>;
 };
